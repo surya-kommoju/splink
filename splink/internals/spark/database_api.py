@@ -325,6 +325,8 @@ class SparkAPI(DatabaseAPI[spark_df]):
                 write_path = f"{self.splink_data_store}.{physical_name}"
                 spark_df.write.mode("overwrite").saveAsTable(write_path)
                 spark_df = self.spark.table(write_path)
+                self.spark.sql(f"alter table {write_path} cluster by auto")
+                self.spark.sql(f"optimize {write_path}")
                 logger.debug(
                     f"Wrote {templated_name} to Delta Table at "
                     f"{self.splink_data_store}.{physical_name}"
