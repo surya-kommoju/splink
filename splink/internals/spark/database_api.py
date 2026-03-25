@@ -45,10 +45,10 @@ class SparkAPI(DatabaseAPI[spark_df]):
         self.repartition_after_blocking = repartition_after_blocking
         self.spark = spark_session
 
-        if num_partitions_on_repartition:
-            self.num_partitions_on_repartition = num_partitions_on_repartition
-        else:
-            self.set_default_num_partitions_on_repartition_if_missing()
+        # if num_partitions_on_repartition:
+        #     self.num_partitions_on_repartition = num_partitions_on_repartition
+        # else:
+        #     self.set_default_num_partitions_on_repartition_if_missing()
 
         self._set_splink_datastore(catalog, database)
 
@@ -341,8 +341,8 @@ class SparkAPI(DatabaseAPI[spark_df]):
                     f"Unknown break_lineage_method: {self.break_lineage_method}"
                 )
 
-        if templated_name == "__splink__blocked_id_pairs":
-            spark_df = spark_df.repartition(self.num_partitions_on_repartition)
+        # if templated_name == "__splink__blocked_id_pairs":
+            # spark_df = spark_df.repartition(self.num_partitions_on_repartition)
 
         return spark_df
 
