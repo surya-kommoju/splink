@@ -278,7 +278,7 @@ class SparkAPI(DatabaseAPI[spark_df]):
         return spark_df
 
     def _break_lineage_and_repartition(self, spark_df, templated_name, physical_name):
-        spark_df = self._repartition_if_needed(spark_df, templated_name)
+        # spark_df = self._repartition_if_needed(spark_df, templated_name)
 
         regex_to_persist = [
             r"__splink__df_comparison_vectors",
