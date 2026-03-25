@@ -325,8 +325,8 @@ class SparkAPI(DatabaseAPI[spark_df]):
                 write_path = f"{self.splink_data_store}.{physical_name}"
                 spark_df.write.mode("overwrite").saveAsTable(write_path)
                 spark_df = self.spark.table(write_path)
-                if "concat" in write_path:
-                    spark_df = spark_df.cache()
+                # if "concat" in write_path:
+                #     spark_df = spark_df.cache()
                 # if "comparison" in write_path:
                 #     self.spark.catalog.clearCache()
                 #     spark_df = spark_df.cache()
