@@ -124,7 +124,7 @@ class SparkAPI(DatabaseAPI[spark_df]):
         return self.spark.sql(final_sql)
 
     def delete_table_from_database(self, name):
-        self._execute_sql_against_backend(f"drop table if exists {name}")
+        self._execute_sql_against_backend(f"drop table if exists {self.splink_data_store}.{name}")
 
     @property
     def accepted_df_dtypes(self):
