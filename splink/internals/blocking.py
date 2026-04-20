@@ -689,7 +689,7 @@ def block_using_rules_sqls(
 
         sql = """
         SELECT
-            min(match_key) as match_key,
+            min(match_key::int) as match_key,
             join_key_l,
             join_key_r
         FROM __splink__blocked_id_pairs_non_unique
