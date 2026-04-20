@@ -161,7 +161,9 @@ class BlockingRule:
         # Note the coalesce function is important here - otherwise
         # you filter out any records with nulls in the previous rules
         # meaning these comparisons get lost
-        return f"coalesce(({self.blocking_rule_sql}),false)"
+        # return f"coalesce(({self.blocking_rule_sql}),false)"
+        return "false"
+
 
     def exclude_pairs_generated_by_all_preceding_rules_sql(
         self,
@@ -448,17 +450,17 @@ class ExplodingBlockingRule(BlockingRule):
             self.exploded_id_pair_table.drop_table_from_database_and_remove_from_cache()
         self.exploded_id_pair_table = None
 
-    # def exclude_pairs_generated_by_this_rule_sql(
-    #     self,
-    #     source_dataset_input_column: Optional[InputColumn],
-    #     unique_id_input_column: InputColumn,
-    # ) -> str:
-    #     """A SQL string specifying how to exclude the results
-    #     of THIS blocking rule from subseqent blocking statements,
-    #     so that subsequent statements do not produce duplicate pairs
-    #     """
+    def exclude_pairs_generated_by_this_rule_sql(
+        self,
+        source_dataset_input_column: Optional[InputColumn],
+        unique_id_input_column: InputColumn,
+    ) -> str:
+        """A SQL string specifying how to exclude the results
+        of THIS blocking rule from subseqent blocking statements,
+        so that subsequent statements do not produce duplicate pairs
+        """
 
-    #     return "false"
+        return "false"
 
     def create_blocked_pairs_sql(
         self,
