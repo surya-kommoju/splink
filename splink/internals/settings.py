@@ -196,6 +196,7 @@ class Settings:
         max_iterations: int = 25,
         # other
         sql_dialect: str,
+        dedupe_edges: bool = True,
         linker_uid: str = None,
     ):
         self._sql_dialect_str = sql_dialect
@@ -230,6 +231,7 @@ class Settings:
         )
 
         self._retain_matching_columns = retain_matching_columns
+        self._dedupe_edges = dedupe_edges
         self._retain_intermediate_calculation_columns = (
             retain_intermediate_calculation_columns
         )

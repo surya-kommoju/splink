@@ -148,36 +148,36 @@ class LinkerClustering:
 
         edges_table_with_composite_ids.drop_table_from_database_and_remove_from_cache()
         nodes_with_composite_ids.drop_table_from_database_and_remove_from_cache()
-        pipeline = CTEPipeline([cc])
+        # pipeline = CTEPipeline([cc])
 
-        enqueue_df_concat(linker, pipeline)
+        # enqueue_df_concat(linker, pipeline)
 
-        columns = concat_table_column_names(self._linker)
-        # don't want to include salting column in output if present
-        columns_without_salt = filter(lambda x: x != "__splink_salt", columns)
+        # columns = concat_table_column_names(self._linker)
+        # # don't want to include salting column in output if present
+        # columns_without_salt = filter(lambda x: x != "__splink_salt", columns)
 
-        select_columns_sql = ", ".join(columns_without_salt)
+        # select_columns_sql = ", ".join(columns_without_salt)
 
-        sql = f"""
-        select
-            cc.cluster_id,
-            {select_columns_sql}
-        from __splink__clustering_output_final as cc
-        left join __splink__df_concat
-        on cc.node_id = {uid_concat_nodes}
-        """
-        pipeline.enqueue_sql(sql, "__splink__df_clustered_with_input_data")
+        # sql = f"""
+        # select
+        #     cc.cluster_id,
+        #     {select_columns_sql}
+        # from __splink__clustering_output_final as cc
+        # left join __splink__df_concat
+        # on cc.node_id = {uid_concat_nodes}
+        # """
+        # pipeline.enqueue_sql(sql, "__splink__df_clustered_with_input_data")
 
-        df_clustered_with_input_data = db_api.sql_pipeline_to_splink_dataframe(pipeline)
+        # df_clustered_with_input_data = db_api.sql_pipeline_to_splink_dataframe(pipeline)
 
-        cc.drop_table_from_database_and_remove_from_cache()
+        # cc.drop_table_from_database_and_remove_from_cache()
 
-        if threshold_match_probability is not None:
-            df_clustered_with_input_data.metadata["threshold_match_probability"] = (
-                threshold_match_probability
-            )
+        # if threshold_match_probability is not None:
+        #     df_clustered_with_input_data.metadata["threshold_match_probability"] = (
+        #         threshold_match_probability
+        #     )
 
-        return df_clustered_with_input_data
+        return cc
 
     def cluster_using_single_best_links(
         self,

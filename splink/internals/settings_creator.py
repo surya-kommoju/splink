@@ -43,6 +43,8 @@ class SettingsCreator:
     term_frequency_adjustment_column_prefix: str = "tf_"
     comparison_vector_value_column_prefix: str = "gamma_"
 
+    dedupe_edges: bool = True
+
     linker_uid: str | None = None
 
     def _as_naive_dict(self) -> dict[str, Any]:

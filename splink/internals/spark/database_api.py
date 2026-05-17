@@ -45,10 +45,10 @@ class SparkAPI(DatabaseAPI[spark_df]):
         self.repartition_after_blocking = repartition_after_blocking
         self.spark = spark_session
 
-        if num_partitions_on_repartition:
-            self.num_partitions_on_repartition = num_partitions_on_repartition
-        else:
-            self.set_default_num_partitions_on_repartition_if_missing()
+        # if num_partitions_on_repartition:
+        #     self.num_partitions_on_repartition = num_partitions_on_repartition
+        # else:
+        #     self.set_default_num_partitions_on_repartition_if_missing()
 
         self._set_splink_datastore(catalog, database)
 
@@ -124,7 +124,7 @@ class SparkAPI(DatabaseAPI[spark_df]):
         return self.spark.sql(final_sql)
 
     def delete_table_from_database(self, name):
-        self._execute_sql_against_backend(f"drop table if exists {name}")
+        self._execute_sql_against_backend(f"drop table if exists {self.splink_data_store}.{name}")
 
     @property
     def accepted_df_dtypes(self):
@@ -278,7 +278,7 @@ class SparkAPI(DatabaseAPI[spark_df]):
         return spark_df
 
     def _break_lineage_and_repartition(self, spark_df, templated_name, physical_name):
-        spark_df = self._repartition_if_needed(spark_df, templated_name)
+        # spark_df = self._repartition_if_needed(spark_df, templated_name)
 
         regex_to_persist = [
             r"__splink__df_comparison_vectors",
@@ -325,6 +325,13 @@ class SparkAPI(DatabaseAPI[spark_df]):
                 write_path = f"{self.splink_data_store}.{physical_name}"
                 spark_df.write.mode("overwrite").saveAsTable(write_path)
                 spark_df = self.spark.table(write_path)
+                # if "concat" in write_path:
+                #     spark_df = spark_df.cache()
+                # if "comparison" in write_path:
+                #     self.spark.catalog.clearCache()
+                #     spark_df = spark_df.cache()
+                self.spark.sql(f"alter table {write_path} cluster by auto")
+                self.spark.sql(f"optimize {write_path}")
                 logger.debug(
                     f"Wrote {templated_name} to Delta Table at "
                     f"{self.splink_data_store}.{physical_name}"
@@ -334,8 +341,8 @@ class SparkAPI(DatabaseAPI[spark_df]):
                     f"Unknown break_lineage_method: {self.break_lineage_method}"
                 )
 
-        if templated_name == "__splink__blocked_id_pairs":
-            spark_df = spark_df.repartition(self.num_partitions_on_repartition)
+        # if templated_name == "__splink__blocked_id_pairs":
+            # spark_df = spark_df.repartition(self.num_partitions_on_repartition)
 
         return spark_df
 
