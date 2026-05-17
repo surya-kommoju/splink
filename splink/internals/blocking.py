@@ -683,28 +683,28 @@ def block_using_rules_sqls(
 
     sql = " UNION ALL ".join(br_sqls)
 
-    if any(isinstance(br, ExplodingBlockingRule) for br in blocking_rules):
-        sqls.append(
-            {"sql": sql, "output_table_name": "__splink__blocked_id_pairs_non_unique"}
-        )
+    # if any(isinstance(br, ExplodingBlockingRule) for br in blocking_rules):
+    sqls.append(
+        {"sql": sql, "output_table_name": "__splink__blocked_id_pairs_non_unique"}
+    )
 
-        if dedupe_edges:
-            sql = """
-            SELECT
-                min(match_key::int) as match_key,
-                join_key_l,
-                join_key_r
-            FROM __splink__blocked_id_pairs_non_unique
-            GROUP BY join_key_l, join_key_r
-            """
-        else:
-            sql = """
-            SELECT distinct
-                match_key::int as match_key,
-                join_key_l,
-                join_key_r
-            FROM __splink__blocked_id_pairs_non_unique
-            """
+    if dedupe_edges:
+        sql = """
+        SELECT
+            min(match_key::int) as match_key,
+            join_key_l,
+            join_key_r
+        FROM __splink__blocked_id_pairs_non_unique
+        GROUP BY join_key_l, join_key_r
+        """
+    else:
+        sql = """
+        SELECT distinct
+            match_key::int as match_key,
+            join_key_l,
+            join_key_r
+        FROM __splink__blocked_id_pairs_non_unique
+        """
 
     sqls.append({"sql": sql, "output_table_name": "__splink__blocked_id_pairs"})
 
