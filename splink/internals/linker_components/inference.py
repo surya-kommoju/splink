@@ -134,6 +134,7 @@ class LinkerInference:
             link_type=link_type,
             source_dataset_input_column=self._linker._settings_obj.column_info_settings.source_dataset_input_column,
             unique_id_input_column=self._linker._settings_obj.column_info_settings.unique_id_input_column,
+            dedupe_edges=self._linker._settings_obj._dedupe_edges,
         )
         pipeline.enqueue_list_of_sqls(sqls)
         blocked_pairs = self._linker._db_api.sql_pipeline_to_splink_dataframe(pipeline)
@@ -264,6 +265,7 @@ class LinkerInference:
             link_type=link_type,
             source_dataset_input_column=self._linker._settings_obj.column_info_settings.source_dataset_input_column,
             unique_id_input_column=self._linker._settings_obj.column_info_settings.unique_id_input_column,
+            dedupe_edges=self._linker._settings_obj._dedupe_edges,
         )
 
         pipeline.enqueue_list_of_sqls(sqls)
@@ -413,6 +415,7 @@ class LinkerInference:
                 link_type=link_type,
                 source_dataset_input_column=source_dataset_input_column,
                 unique_id_input_column=unique_id_input_column,
+                dedupe_edges=self._linker._settings_obj._dedupe_edges,
             )
         )
         # we are going to insert an intermediate table, so rename this
@@ -592,6 +595,7 @@ class LinkerInference:
             link_type="two_dataset_link_only",
             source_dataset_input_column=settings.column_info_settings.source_dataset_input_column,
             unique_id_input_column=settings.column_info_settings.unique_id_input_column,
+            dedupe_edges=settings._dedupe_edges,
         )
         pipeline.enqueue_list_of_sqls(sqls)
 

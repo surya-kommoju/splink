@@ -552,6 +552,7 @@ class Linker:
             link_type="self_link",
             source_dataset_input_column=settings.column_info_settings.source_dataset_input_column,
             unique_id_input_column=settings.column_info_settings.unique_id_input_column,
+            dedupe_edges=settings._dedupe_edges,
         )
         pipeline.enqueue_list_of_sqls(sqls)
 

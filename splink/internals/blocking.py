@@ -644,6 +644,7 @@ def block_using_rules_sqls(
     link_type: "LinkTypeLiteralType",
     source_dataset_input_column: Optional[InputColumn],
     unique_id_input_column: InputColumn,
+    dedupe_edges: bool,
 ) -> list[dict[str, str]]:
     """Use the blocking rules specified in the linker's settings object to
     generate a SQL statement that will create pairwise record comparions
@@ -687,14 +688,24 @@ def block_using_rules_sqls(
             {"sql": sql, "output_table_name": "__splink__blocked_id_pairs_non_unique"}
         )
 
-        sql = """
-        SELECT
-            min(match_key::int) as match_key,
-            join_key_l,
-            join_key_r
-        FROM __splink__blocked_id_pairs_non_unique
-        GROUP BY join_key_l, join_key_r
-        """
+        if dedupe_edges:
+            sql = """
+            SELECT
+                min(match_key::int) as match_key,
+                join_key_l,
+                join_key_r
+            FROM __splink__blocked_id_pairs_non_unique
+            GROUP BY join_key_l, join_key_r
+            """
+        else:
+            sql = """
+            SELECT
+                match_key::int as match_key,
+                join_key_l,
+                join_key_r
+            FROM __splink__blocked_id_pairs_non_unique
+            GROUP BY join_key_l, join_key_r
+            """
 
     sqls.append({"sql": sql, "output_table_name": "__splink__blocked_id_pairs"})
 
